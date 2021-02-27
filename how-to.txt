@@ -1,0 +1,16 @@
+
+-- Nao precisa mais disso:
+lsusb
+source /etc/environment
+
+-- Usar esse aqui:
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/51-android-usb.rules
+adb devices
+adb -s RX8N30CCFZD reverse tcp:8081 tcp:8081
+npx react-native start
+npx react-native run-android
+
+
+-- console.log
+npx react-native log-android
+adb logcat *:S ReactNative:V ReactNativeJS:V
