@@ -8,10 +8,13 @@ import { AppConfig } from '../../config/AppConfig'
 export const UserRequests = {
 
     async login(name: string): Promise<string> {
-        const response = await axios.post(`${AppConfig.getInstance().apiBaseUrl}/login`, { name })
-        const { tokenJwt } = response as any
+
+        const response = await axios.post(`${AppConfig.load().apiBaseUrl}/users/login`, { name })
+        const tokenJwt = (response as any)?.data?.tokenJwt as string
+
         if (!tokenJwt)
             throw new Error('Token de acesso não detectado')
-        return tokenJwt as string
+
+        return tokenJwt
     }
 }

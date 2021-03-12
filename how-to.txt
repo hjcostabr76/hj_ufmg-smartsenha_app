@@ -1,16 +1,33 @@
 
--- Nao precisa mais disso:
-lsusb
-source /etc/environment
-
--- Usar esse aqui:
-echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/51-android-usb.rules
-adb devices
+-- Executar no android
 adb -s RX8N30CCFZD reverse tcp:8081 tcp:8081
 npx react-native start
 npx react-native run-android
 
+-- react-native-debugger
+> Instalar via .deb
+> Nao precisa configurar nada (geralmente)
+> Para habilitar network: Clicar com lado direito na area 'redux' e habilitar network
 
--- console.log
+-- requisicoes
+> Alterar manifest para habilitar requisicao http
+> Detectar IP da maquina
+> Incluir 'network_security_policy' com habilitacao do ip local
+> Certificar-se que a url base contem 'http://'
+> Certificar-se que a url base utiliza o IP ao invez de 'localhost'
+
+-- .env
+> Usar: react-native-config
+> Lembrar que a instalacao requer modificar build.gradle
+
+-- console.log (terminal)
 npx react-native log-android
 adb logcat *:S ReactNative:V ReactNativeJS:V
+
+-- Capturar ID do celular:
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/51-android-usb.rules
+adb devices
+
+-- Nao precisa mais disso:
+lsusb
+source /etc/environment

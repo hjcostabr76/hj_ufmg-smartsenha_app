@@ -3,6 +3,8 @@ import { Button, Form, Input, Item, Label, Text, Toast } from 'native-base'
 import React, { useState } from 'react'
 import { View } from 'react-native'
 
+import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
+
 import { Theme } from '../../../../config/Theme'
 import { UserRequests } from '../../UserRequests'
 
@@ -11,10 +13,12 @@ LoginSC.NAV_TITLE = 'Smart Senha'
 
 /**
  * Tela de login.
+ * TODO: Avancar apos sucesso no login
  */
 export function LoginSC(): React.ReactElement {
 
     const [userName, setUserName] = useState<string>()
+    const [isRunningRequest, setIsRunningRequest] = useState<boolean>(true)
 
     async function onLoginPress(): Promise<void> {
 
@@ -22,6 +26,7 @@ export function LoginSC(): React.ReactElement {
             return
 
         try {
+            setIsRunningRequest(true)
             // const loginToken = await UserRequests.login(userName!)
             await UserRequests.login(userName!)
 
@@ -32,6 +37,9 @@ export function LoginSC(): React.ReactElement {
                 type: 'danger',
                 duration: 2500,
             })
+
+        } finally {
+            setIsRunningRequest(false)
         }
     }
 
@@ -58,6 +66,8 @@ export function LoginSC(): React.ReactElement {
             alignItems: 'stretch',
             paddingHorizontal: 20,
         }}>
+            <LoaderCP show={isRunningRequest} />
+
             <Form>
                 <Item floatingLabel>
                     <Label>Nome</Label>

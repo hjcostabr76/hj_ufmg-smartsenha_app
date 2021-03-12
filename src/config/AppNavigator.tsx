@@ -5,6 +5,7 @@ import React from 'react'
 import { EstablishmentSelectionSC } from '../module/establishment/screen-establishment-selection/EstablishmentSelectionSC'
 import { PasswordDetailsSC } from '../module/password/screen-password-details/PasswordDetailsSC'
 import { LoginSC } from '../module/user/screen/screen-login/LoginSC'
+import { AppConfig } from './AppConfig'
 import { Theme } from './Theme'
 
 const Stack = createStackNavigator()
@@ -28,7 +29,7 @@ export function AppNavigator(): React.ReactElement {
                 }}
             >
                 <Stack.Screen name={LoginSC.NAV_NAME} options={{ title: LoginSC.NAV_TITLE }} component={LoginSC} />
-                <Stack.Screen name={EstablishmentSelectionSC.NAV_NAME} options={{ title: EstablishmentSelectionSC.NAV_TITLE }} component={EstablishmentSelectionSC} />
+                <Stack.Screen name={EstablishmentSelectionSC.NAV_NAME} options={{ title: EstablishmentSelectionSC.NAV_TITLE }} component={EstablishmentSelectionSC}/>
                 <Stack.Screen name={PasswordDetailsSC.NAV_NAME} options={{ title: PasswordDetailsSC.NAV_TITLE }} component={PasswordDetailsSC} />
             </Stack.Navigator>
         </NavigationContainer>

@@ -10,5 +10,7 @@ module.exports = {
   ],
   rules: {
       'import/no-unused-modules': ['off'],
+      'max-lines-per-function': ['off'],
+      'no-restricted-properties': ['error', { object: 'ENV' }]
   }
 };
