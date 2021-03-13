@@ -1,7 +1,4 @@
-type EstablishmentTP = {
-    name: string,
-    addressString: string,
-}
+import { IEstablishment } from '../IEstablishment'
 
 /**
  * MOCKS
@@ -9,22 +6,22 @@ type EstablishmentTP = {
  */
 export class EstablishmentSelectionSCMocks {
 
-    static readonly establishments: EstablishmentTP[] = [
+    static readonly establishments: Array<Partial<IEstablishment>> = [
         {
             name: 'Vivo',
-            addressString: 'Avenida Tabapoã, 932 - Setor 03',
+            address: 'Avenida Tabapoã, 932 - Setor 03',
         },
         {
             name: 'Banco do Brasil',
-            addressString: 'Rua Joaquim Ribeiro, 164 - Centro',
+            address: 'Rua Joaquim Ribeiro, 164 - Centro',
         },
         {
             name: 'Banco Itaú',
-            addressString: 'Rua Dezenove, 361 - São Luís',
+            address: 'Rua Dezenove, 361 - São Luís',
         },
         {
             name: 'Hospital da Unimed',
-            addressString: 'Avenida Beatles, 111 - Cidade Continental',
+            address: 'Avenida Beatles, 111 - Cidade Continental',
         },
     ]
 }

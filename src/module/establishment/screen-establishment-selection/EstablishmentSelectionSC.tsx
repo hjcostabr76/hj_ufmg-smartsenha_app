@@ -9,13 +9,14 @@ import { NotificationUtils } from '../../../common/utils/NotificationUtils'
 import { StringUtils } from '../../../common/utils/StringUtils'
 import { ThemeConfig } from '../../../config/ThemeConfig'
 import { EstablishmentRequests } from '../EstablishmentRequests'
+import { IEstablishment } from '../IEstablishment'
 
 /**
  * TELA: Selecao de estabelecimentos
  */
 export function EstablishmentSelectionSC(): React.ReactElement {
 
-    const [establishmentList, setEstablishmentList] = useState<any[]>([])
+    const [establishmentList, setEstablishmentList] = useState<IEstablishment[]>([])
     const [hasSearchBeenRan, setHasSearchBeenRan] = useState<boolean>(false)
 
     const isFocused = useIsFocused()
@@ -23,15 +24,15 @@ export function EstablishmentSelectionSC(): React.ReactElement {
     useEffect(() => { getList() }, [])
     useEffect(() => { getList() }, [isFocused])
 
+    const showList = hasSearchBeenRan && !!establishmentList.length
+
     async function getList(): Promise<void> {
 
         if (!isFocused || hasSearchBeenRan)
             return
 
         try {
-            // setEstablishmentList(await EstablishmentRequests.get())
-            await EstablishmentRequests.get()
-            setEstablishmentList([])
+            setEstablishmentList(await EstablishmentRequests.get())
 
         } catch (error) {
             Logger.error(`FALHA - ${getList.name}`, error)
@@ -47,7 +48,7 @@ export function EstablishmentSelectionSC(): React.ReactElement {
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            alignItems: 'center',
+            alignItems: 'stretch',
         }}>
 
             {
@@ -61,27 +62,36 @@ export function EstablishmentSelectionSC(): React.ReactElement {
                             marginBottom: 10,
                         }}
                     >
-                        <Text>Escanear QR Code</Text>
+                        <Text>Escanear ads</Text>
                     </Button>
             }
 
-            <LoaderCP show={!hasSearchBeenRan} />
-
             {
                 !hasSearchBeenRan
-                    ? <Text style={{ marginTop: 80 }}>{'Carregando...'}</Text>
-                    : <List>
-                        {
-                            establishmentList.map((establishment, i) => (
-                                <ListItem avatar key={StringUtils.getSlugStyleString(`${i}-${establishment.name}`)}>
-                                    <Body>
-                                        <Text>{establishment.name}</Text>
-                                        <Text>{establishment.addressString}</Text>
-                                    </Body>
-                                </ListItem>
-                            ))
-                        }
-                    </List>
+                && <LoaderCP />
+            }
+
+            {
+                !showList
+                && <Text style={{ marginTop: 80, textAlign: 'center' }}>
+                    {hasSearchBeenRan ? 'Nenhum estabelecimento disponível...' : 'Carregando...'}
+                </Text>
+            }
+
+            {
+                showList
+                && <List>
+                    {
+                        establishmentList.map((establishment, i) => (
+                            <ListItem avatar key={StringUtils.getSlugStyleString(`${i}-${establishment.name}`)}>
+                                <Body>
+                                    <Text>{establishment.name}</Text>
+                                    <Text>{establishment.address}</Text>
+                                </Body>
+                            </ListItem>
+                        ))
+                    }
+                </List>
             }
         </View>
     )
