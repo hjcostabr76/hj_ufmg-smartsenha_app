@@ -3,18 +3,14 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 
 import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
-import { PropsWithNavigationTP } from '../../../../common/components/navigator/inner/PropsWithNavigationTP'
-import { NavigationConfigTP } from '../../../../config/NavigationConfigTP'
+import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
 import { UserRequests } from '../../UserRequests'
 
-type PropsTP = PropsWithNavigationTP<NavigationConfigTP, 'login'>
-
 /**
  * Tela de login.
- * TODO: Avancar apos sucesso no login
  */
-export function LoginSC(props: PropsTP): React.ReactElement {
+export function LoginSC(): React.ReactElement {
 
     const [userName, setUserName] = useState<string>()
     const [isRunningRequest, setIsRunningRequest] = useState<boolean>(true)
@@ -30,12 +26,7 @@ export function LoginSC(props: PropsTP): React.ReactElement {
             await UserRequests.login(userName!)
 
         } catch (error) {
-            Toast.show({
-                text: 'Falha! Favor tentar novamente em instantes',
-                buttonText: 'OK',
-                type: 'danger',
-                duration: 2500,
-            })
+            NotificationUtils.showError('Falha! Favor tentar novamente em instantes')
 
         } finally {
             setIsRunningRequest(false)
@@ -47,13 +38,7 @@ export function LoginSC(props: PropsTP): React.ReactElement {
         if (userName)
             return true
 
-        Toast.show({
-            text: 'Insira o Nome para prosseguir',
-            buttonText: 'OK',
-            type: 'danger',
-            duration: 2500,
-        })
-
+        NotificationUtils.showError('Insira o Nome para prosseguir')
         return false
     }
 
