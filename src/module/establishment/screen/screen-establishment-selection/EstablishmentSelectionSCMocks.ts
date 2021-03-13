@@ -1,4 +1,4 @@
-import { IEstablishment } from '../IEstablishment'
+import { IEstablishment } from '../../IEstablishment'
 
 /**
  * MOCKS

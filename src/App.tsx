@@ -2,17 +2,18 @@ import { Root as NativeBaseRoot } from 'native-base'
 import React, { useEffect, useState } from 'react'
 
 import { Logger } from './common/Logger'
-import { LoaderCP } from './common/components/loader/LoaderCP'
+import { LoaderCP } from './common/component/loader/LoaderCP'
 
-import { NavigatorCP } from './common/components/navigator/NavigatorCP'
+import { NavigatorCP } from './common/component/navigator/NavigatorCP'
 import { AppNavigationConfigTP } from './config/AppNavigationConfigTP'
 import { ThemeConfig } from './config/ThemeConfig'
-import { EstablishmentSelectionSCNavConfig } from './module/establishment/screen-establishment-selection/EstablishmentSelectionSCNavConfig'
+import { EstablishmentSelectionSCNavConfig } from './module/establishment/screen/screen-establishment-selection/EstablishmentSelectionSCNavConfig'
 import { PasswordDetailsSCNavConfig } from './module/password/screen-password-details/PasswordDetailsSCNavConfig'
 import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavConfig'
 
 /**
  * Componente principal de inicialização do APP.
+ * @see AppConfig
  */
 export default function(): React.ReactNode { // eslint-disable-line import/no-default-export
 

@@ -1,4 +1,4 @@
-import { NavigationScreenConfigTP } from '../../../common/components/navigator/inner/NavigationScreenConfigTP'
+import { NavigationScreenConfigTP } from '../../../common/component/navigator/inner/NavigationScreenConfigTP'
 import { PasswordDetailsSC } from './PasswordDetailsSC'
 
 /**

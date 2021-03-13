@@ -1,4 +1,4 @@
-import { NavigationScreenConfigTP } from '../../../common/components/navigator/inner/NavigationScreenConfigTP'
+import { NavigationScreenConfigTP } from '../../../../common/component/navigator/inner/NavigationScreenConfigTP'
 import { EstablishmentSelectionSC } from './EstablishmentSelectionSC'
 
 /**
@@ -6,5 +6,5 @@ import { EstablishmentSelectionSC } from './EstablishmentSelectionSC'
  */
 export const EstablishmentSelectionSCNavConfig: NavigationScreenConfigTP = {
     component: EstablishmentSelectionSC,
-    title: 'Selecione o Estabelecimento',
+    title: 'Selecionar Estabelecimento',
 }
