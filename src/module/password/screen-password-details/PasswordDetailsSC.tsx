@@ -1,7 +1,7 @@
 import { Button, Container, Grid, H1, H3, Icon, Row, Text } from 'native-base'
 import React from 'react'
 
-import { Theme } from '../../../config/Theme'
+import { ThemeConfig } from '../../../config/ThemeConfig'
 import { PasswordDetailsSCMocks } from './PasswordDetailsSCMocks'
 
 PasswordDetailsSC.NAV_NAME = 'details'
@@ -12,7 +12,7 @@ PasswordDetailsSC.NAV_TITLE = 'Aguardando Atendimento'
  */
 export function PasswordDetailsSC(): React.ReactElement {
     return (
-        <Container style={{ backgroundColor: Theme.COLOR_GRAY }}>
+        <Container style={{ backgroundColor: ThemeConfig.COLOR_GRAY }}>
             <Grid>
                 <Row style={{
                     alignItems: 'flex-end',
@@ -20,7 +20,7 @@ export function PasswordDetailsSC(): React.ReactElement {
                     flex: 4,
                     backgroundColor: 'white',
                 }}>
-                    <Icon type={'FontAwesome'} name={'user-circle'} style={{ fontSize: 80, color: Theme.COLOR_GRAY }}/>
+                    <Icon type={'FontAwesome'} name={'user-circle'} style={{ fontSize: 80, color: ThemeConfig.COLOR_GRAY }}/>
                 </Row>
 
                 <Row
@@ -49,7 +49,7 @@ export function PasswordDetailsSC(): React.ReactElement {
                 <Button
                     block
                     style={{
-                        backgroundColor: Theme.COLOR_PINK,
+                        backgroundColor: ThemeConfig.COLOR_PINK,
                         marginBottom: 30,
                         marginHorizontal: 15,
                     }}

@@ -11,6 +11,7 @@ module.exports = {
   rules: {
       'import/no-unused-modules': ['off'],
       'max-lines-per-function': ['off'],
+      '@typescript-eslint/unified-signatures': ['off'],
       'no-restricted-properties': ['error', { object: 'ENV' }]
   }
 };

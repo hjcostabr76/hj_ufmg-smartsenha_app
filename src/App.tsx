@@ -1,7 +1,9 @@
 import { Root as NativeBaseRoot } from 'native-base'
 import React from 'react'
 
-import { AppNavigator } from './config/AppNavigator'
+import { ThemeConfig } from './config/ThemeConfig'
+import { NavigatorCP } from './config/navigation/NavigatorCP'
+import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavConfig'
 
 /**
  * Componente principal de inicialização do APP.
@@ -9,7 +11,19 @@ import { AppNavigator } from './config/AppNavigator'
 export default function(): React.ReactNode { // eslint-disable-line import/no-default-export
     return (
         <NativeBaseRoot>
-            <AppNavigator/>
+            <NavigatorCP
+                routes={{
+                    login: LoginSCNavConfig,
+                }}
+                screenOptions={{
+                    headerStyle: { backgroundColor: ThemeConfig.COLOR_PINK },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                    },
+                }}
+            />
         </NativeBaseRoot>
     )
 }

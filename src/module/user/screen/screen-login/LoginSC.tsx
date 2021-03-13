@@ -1,21 +1,22 @@
-import * as _ from 'lodash'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Button, Form, Input, Item, Label, Text, Toast } from 'native-base'
 import React, { useState } from 'react'
 import { View } from 'react-native'
 
 import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
-
-import { Theme } from '../../../../config/Theme'
+import { ThemeConfig } from '../../../../config/ThemeConfig'
+import { RootNavigatorConfigTP } from '../../../../config/navigation/RootNavigatorConfigTP'
 import { UserRequests } from '../../UserRequests'
 
-LoginSC.NAV_NAME = 'Login'
-LoginSC.NAV_TITLE = 'Smart Senha'
+type PropsTP = {
+    navigation: StackNavigationProp<RootNavigatorConfigTP, 'login'>,
+}
 
 /**
  * Tela de login.
  * TODO: Avancar apos sucesso no login
  */
-export function LoginSC(): React.ReactElement {
+export function LoginSC(props: PropsTP): React.ReactElement {
 
     const [userName, setUserName] = useState<string>()
     const [isRunningRequest, setIsRunningRequest] = useState<boolean>(true)
@@ -80,7 +81,7 @@ export function LoginSC(): React.ReactElement {
 
             <Button
                 block
-                style={{ backgroundColor: Theme.COLOR_GRAY, marginBottom: 50 }}
+                style={{ backgroundColor: ThemeConfig.COLOR_GRAY, marginBottom: 50 }}
                 onPress={onLoginPress}
             >
                 <Text>Login</Text>

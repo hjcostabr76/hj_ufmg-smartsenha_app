@@ -3,7 +3,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { StringUtils } from '../../../common/utils/StringUtils'
-import { Theme } from '../../../config/Theme'
+import { ThemeConfig } from '../../../config/ThemeConfig'
 import { EstablishmentSelectionSCMocks } from './EstablishmentSelectionSCMocks'
 
 EstablishmentSelectionSC.NAV_NAME = 'select'
@@ -23,7 +23,7 @@ export function EstablishmentSelectionSC(): React.ReactElement {
             <Button
                 block
                 style={{
-                    backgroundColor: Theme.COLOR_GRAY,
+                    backgroundColor: ThemeConfig.COLOR_GRAY,
                     marginHorizontal: 15,
                     marginTop: 20,
                     marginBottom: 10,
