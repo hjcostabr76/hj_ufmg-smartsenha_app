@@ -1,6 +1,4 @@
-import { Title } from 'native-base'
-
-import { NavigationScreenConfigTP } from '../../../../common/navigation/NavigationScreenConfigTP'
+import { NavigationScreenConfigTP } from '../../../../common/components/navigator/inner/NavigationScreenConfigTP'
 import { LoginSC } from './LoginSC'
 
 /**

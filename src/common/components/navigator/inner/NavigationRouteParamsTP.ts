@@ -1,5 +1,5 @@
-import { AnyObjTP } from '../types/AnyObjTP'
-import { OrUndefTP } from '../types/OrUndefTP'
+import { AnyObjTP } from '../../../types/AnyObjTP'
+import { OrUndefTP } from '../../../types/OrUndefTP'
 
 /**
  * TYPE: Navegacao

@@ -9,8 +9,10 @@ module.exports = {
       'hjcostabr76/spellcheck',
   ],
   rules: {
-      'import/no-unused-modules': ['off'],
+      'unicorn/no-null': ['off'],
       'max-lines-per-function': ['off'],
+      'import/no-unused-modules': ['off'],
+      '@typescript-eslint/no-unused-vars': ['warn'],
       '@typescript-eslint/unified-signatures': ['off'],
       'no-restricted-properties': ['error', { object: 'ENV' }]
   }

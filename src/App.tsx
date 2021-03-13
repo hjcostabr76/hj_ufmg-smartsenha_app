@@ -1,8 +1,9 @@
 import { Root as NativeBaseRoot } from 'native-base'
 import React from 'react'
 
+import { NavigatorCP } from './common/components/navigator/NavigatorCP'
+import { NavigationConfigTP } from './config/NavigationConfigTP'
 import { ThemeConfig } from './config/ThemeConfig'
-import { NavigatorCP } from './config/navigation/NavigatorCP'
 import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavConfig'
 
 /**
@@ -11,7 +12,7 @@ import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavCo
 export default function(): React.ReactNode { // eslint-disable-line import/no-default-export
     return (
         <NativeBaseRoot>
-            <NavigatorCP
+            <NavigatorCP<NavigationConfigTP>
                 routes={{
                     login: LoginSCNavConfig,
                 }}

@@ -1,16 +1,14 @@
-import { StackNavigationProp } from '@react-navigation/stack'
 import { Button, Form, Input, Item, Label, Text, Toast } from 'native-base'
 import React, { useState } from 'react'
 import { View } from 'react-native'
 
 import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
+import { PropsWithNavigationTP } from '../../../../common/components/navigator/inner/PropsWithNavigationTP'
+import { NavigationConfigTP } from '../../../../config/NavigationConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
-import { RootNavigatorConfigTP } from '../../../../config/navigation/RootNavigatorConfigTP'
 import { UserRequests } from '../../UserRequests'
 
-type PropsTP = {
-    navigation: StackNavigationProp<RootNavigatorConfigTP, 'login'>,
-}
+type PropsTP = PropsWithNavigationTP<NavigationConfigTP, 'login'>
 
 /**
  * Tela de login.

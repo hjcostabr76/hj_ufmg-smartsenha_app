@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { OrUndefTP } from '../types/OrUndefTP'
+import { OrUndefTP } from '../../../types/OrUndefTP'
 import { NavigationRouteParamsTP } from './NavigationRouteParamsTP'
 
 /**
@@ -9,7 +9,7 @@ import { NavigationRouteParamsTP } from './NavigationRouteParamsTP'
  * Parametros de configuracao de roteamento para 01 tela.
  */
 export type NavigationScreenConfigTP<NavParamsTP extends OrUndefTP<NavigationRouteParamsTP> = undefined> = {
-    component: React.FunctionComponent,
+    component: React.FunctionComponent<any>,
     initialParams?: NavParamsTP,
     title?: string,
 }
