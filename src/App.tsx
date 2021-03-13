@@ -1,5 +1,8 @@
 import { Root as NativeBaseRoot } from 'native-base'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { Logger } from './common/Logger'
+import { LoaderCP } from './common/components/loader/LoaderCP'
 
 import { NavigatorCP } from './common/components/navigator/NavigatorCP'
 import { AppNavigationConfigTP } from './config/AppNavigationConfigTP'
@@ -12,6 +15,19 @@ import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavCo
  * Componente principal de inicialização do APP.
  */
 export default function(): React.ReactNode { // eslint-disable-line import/no-default-export
+
+    const [isInitialized, setIsInitialized] = useState<boolean>(false)
+
+    useEffect(init, [])
+
+    function init(): void {
+        Logger.enable(__DEV__)
+        setIsInitialized(true)
+    }
+
+    if (!isInitialized)
+        return <LoaderCP/>
+
     return (
         <NativeBaseRoot>
             <NavigatorCP<AppNavigationConfigTP>

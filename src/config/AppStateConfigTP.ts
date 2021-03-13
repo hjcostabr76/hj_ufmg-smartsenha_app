@@ -4,4 +4,5 @@
  */
 export type AppStateConfigTP = {
     authToken: string,
+    userName: string,
 }

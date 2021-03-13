@@ -16,7 +16,9 @@ type PropsTP<ConfigTP extends NavigatorConfigTP> = {
 
 /**
  * CONFIG
- * Gera & retorna configuracao de rotas & transicao de telas
+ * Gera & retorna configuracao de rotas & transicao de telas.
+ *
+ * TODO: Criar wrapper estatico para gerir transicao de rotas
  */
 export function NavigatorCP<ConfigTP extends NavigatorConfigTP>(props: PropsTP<ConfigTP>): React.ReactElement | null {
 

@@ -9,5 +9,5 @@ type PropsTP = {
  * Componente animado com um spinner girando para sinalizar carregamento.
  */
 export function LoaderCP(props: PropsTP): React.ReactElement {
-    return props.show ? <Spinner/> : <></>
+    return (props.show !== false) ? <Spinner/> : <></>
 }
