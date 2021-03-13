@@ -3,6 +3,7 @@ import { Body, Button, List, ListItem, Text } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 
+import { AppStateManager } from '../../../common/AppStateManager'
 import { Logger } from '../../../common/Logger'
 import { LoaderCP } from '../../../common/components/loader/LoaderCP'
 import { NotificationUtils } from '../../../common/utils/NotificationUtils'
@@ -18,13 +19,21 @@ export function EstablishmentSelectionSC(): React.ReactElement {
 
     const [establishmentList, setEstablishmentList] = useState<IEstablishment[]>([])
     const [hasSearchBeenRan, setHasSearchBeenRan] = useState<boolean>(false)
+    const [locationText, setLocationText] = useState<string>('Não foi possível obter a localização')
 
     const isFocused = useIsFocused()
 
-    useEffect(() => { getList() }, [])
-    useEffect(() => { getList() }, [isFocused])
+    useEffect(() => { updateView() }, [])
+    useEffect(() => { updateView() }, [isFocused])
 
     const showList = hasSearchBeenRan && !!establishmentList.length
+
+    async function updateView(): Promise<void> {
+        getList()
+        const locationAddress = await AppStateManager.get('currentAddress')
+        if (locationAddress)
+            setLocationText(`Endereço atual: ${locationAddress}`)
+    }
 
     async function getList(): Promise<void> {
 
@@ -32,7 +41,8 @@ export function EstablishmentSelectionSC(): React.ReactElement {
             return
 
         try {
-            setEstablishmentList(await EstablishmentRequests.get())
+            const _establishmentList = await EstablishmentRequests.get(+AppStateManager.get('latitude'), +AppStateManager.get('longitude'))
+            setEstablishmentList(_establishmentList)
 
         } catch (error) {
             Logger.error(`FALHA - ${getList.name}`, error)
@@ -80,18 +90,21 @@ export function EstablishmentSelectionSC(): React.ReactElement {
 
             {
                 showList
-                && <List>
-                    {
-                        establishmentList.map((establishment, i) => (
-                            <ListItem avatar key={StringUtils.getSlugStyleString(`${i}-${establishment.name}`)}>
-                                <Body>
-                                    <Text>{establishment.name}</Text>
-                                    <Text>{establishment.address}</Text>
-                                </Body>
-                            </ListItem>
-                        ))
-                    }
-                </List>
+                && <>
+                    <Text style={{ textAlign: 'center' }}>{locationText}</Text>
+                    <List>
+                        {
+                            establishmentList.map((establishment, i) => (
+                                <ListItem avatar key={StringUtils.getSlugStyleString(`${i}-${establishment.name}`)}>
+                                    <Body>
+                                        <Text>{establishment.name}</Text>
+                                        <Text>{establishment.address}</Text>
+                                    </Body>
+                                </ListItem>
+                            ))
+                        }
+                    </List>
+                </>
             }
         </View>
     )

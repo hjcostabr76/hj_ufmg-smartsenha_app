@@ -6,6 +6,7 @@ import ENV from 'react-native-config'
  */
 export class AppConfig {
 
+    readonly isSimulation = true
     readonly apiBaseUrl: string
 
     private constructor() {

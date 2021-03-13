@@ -8,9 +8,14 @@ import { IEstablishment } from './IEstablishment'
  */
 export const EstablishmentRequests = {
 
-    async get(): Promise<IEstablishment[]> {
+    async get(latitude: number, longitude: number): Promise<IEstablishment[]> {
 
-        const response = await axios.get(`${AppConfig.load().apiBaseUrl}/establishment`)
+        const response = await axios({
+            method: 'GET',
+            url: `${AppConfig.load().apiBaseUrl}/establishment/inRadius`,
+            params: { latitude, longitude }
+        })
+
         const establishments = (response as any)?.data as IEstablishment[]
 
         if (!establishments)

@@ -8,14 +8,17 @@ import { Logger } from '../../../../common/Logger'
 import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
 import { PropsWithNavigationTP } from '../../../../common/components/navigator/inner/PropsWithNavigationTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
+import { AppConfig } from '../../../../config/AppConfig'
 import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
+import { MockedLocations } from '../../../../config/mock/type/MockedLocations'
 import { UserRequests } from '../../UserRequests'
 
 type PropsTP = PropsWithNavigationTP<AppNavigationConfigTP, 'userLogin'>
 
 /**
  * Tela de login.
+ * TODO: Capturar localizacao real do usuario
  */
 export function LoginSC(props: PropsTP): React.ReactElement {
 
@@ -53,9 +56,7 @@ export function LoginSC(props: PropsTP): React.ReactElement {
 
             setIsRunningRequest(true)
             const authToken = await UserRequests.login(userName!)
-
-            AppStateManager.set('userName', userName!)
-            AppStateManager.set('authToken', authToken)
+            setLoggedUserData(authToken)
 
         } catch (error) {
             Logger.error(`FALHA - ${onLoginPress.name}: `, error)
@@ -66,13 +67,41 @@ export function LoginSC(props: PropsTP): React.ReactElement {
         }
     }
 
+    function setLoggedUserData(authToken: string): void {
+
+        // Determina localizacao do usuario
+        let latitude = 0
+        let longitude = 0
+        let currentAddress = ''
+
+        if (AppConfig.load().isSimulation) {
+            const userLocation = MockedLocations.find(location => location.userName === userName)
+            latitude = userLocation?.coordinates.latitude ?? latitude
+            longitude = userLocation?.coordinates.longitude ?? longitude
+            currentAddress = userLocation?.address ?? currentAddress
+        }
+
+        // Coloca dados do usuario no estado da aplicacao
+        AppStateManager.set('userName', userName!)
+        AppStateManager.set('authToken', authToken)
+
+        AppStateManager.set('latitude', latitude)
+        AppStateManager.set('longitude', longitude)
+        AppStateManager.set('currentAddress', currentAddress)
+    }
+
     function validate(): boolean {
 
-        if (userName)
+        const isValidUserName = AppConfig.load().isSimulation
+            ? MockedLocations.some(location => location.userName === userName)
+            : !!userName
+
+        if (isValidUserName)
             return true
 
         NotificationUtils.showError('Insira o Nome para prosseguir')
         return false
+
     }
 
     function onChangeText(text: string): void {
