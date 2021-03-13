@@ -8,13 +8,13 @@ export class AppConfig {
 
     readonly apiBaseUrl: string
 
-    private static instance?: AppConfig // eslint-disable-line @typescript-eslint/member-ordering
-
     private constructor() {
         /* eslint-disable no-restricted-properties */
         this.apiBaseUrl = ENV.URL_API ?? ''
         /* eslint-enable no-restricted-properties */
     }
+
+    private static instance?: AppConfig // eslint-disable-line @typescript-eslint/member-ordering
 
     static load(): AppConfig {
         if (!this.instance)

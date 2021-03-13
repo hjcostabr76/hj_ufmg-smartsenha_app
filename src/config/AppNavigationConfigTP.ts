@@ -4,6 +4,8 @@
  *
  * @see https://reactnavigation.org/docs/typescript/#type-checking-the-navigator
  */
-export type NavigationConfigTP = {
-    login: undefined,
+export type AppNavigationConfigTP = {
+    userLogin: undefined,
+    pwdDetails: undefined,
+    establishmentSelect: undefined,
 }

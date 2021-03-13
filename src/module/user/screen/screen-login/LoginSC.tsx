@@ -1,16 +1,21 @@
-import { Button, Form, Input, Item, Label, Text, Toast } from 'native-base'
+import { Button, Form, Input, Item, Label, Text } from 'native-base'
 import React, { useState } from 'react'
 import { View } from 'react-native'
 
+import { AppStateManager } from '../../../../common/AppStateManager'
 import { LoaderCP } from '../../../../common/components/loader/LoaderCP'
+import { PropsWithNavigationTP } from '../../../../common/components/navigator/inner/PropsWithNavigationTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
+import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
 import { UserRequests } from '../../UserRequests'
+
+type PropsTP = PropsWithNavigationTP<AppNavigationConfigTP, 'user_login'>
 
 /**
  * Tela de login.
  */
-export function LoginSC(): React.ReactElement {
+export function LoginSC(props: PropsTP): React.ReactElement {
 
     const [userName, setUserName] = useState<string>()
     const [isRunningRequest, setIsRunningRequest] = useState<boolean>(true)
@@ -22,8 +27,9 @@ export function LoginSC(): React.ReactElement {
 
         try {
             setIsRunningRequest(true)
-            // const loginToken = await UserRequests.login(userName!)
-            await UserRequests.login(userName!)
+            const authToken = await UserRequests.login(userName!)
+            AppStateManager.set('authToken', authToken)
+            props.navigation.navigate('establishmentSelect')
 
         } catch (error) {
             NotificationUtils.showError('Falha! Favor tentar novamente em instantes')

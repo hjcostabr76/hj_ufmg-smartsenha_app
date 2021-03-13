@@ -40,6 +40,7 @@ export function NavigatorCP<ConfigTP extends NavigatorConfigTP>(props: PropsTP<C
 
                         return (
                             <stackCP.Screen
+                                key={`${screenName as string}_sc`}
                                 name={screenName}
                                 options={{ title: config.title }}
                                 component={config.component}
