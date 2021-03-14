@@ -8,15 +8,16 @@ import { AppStateManager } from '../../../../common/AppStateManager'
 import { Logger } from '../../../../common/Logger'
 import { ButtonQRCodeCP } from '../../../../common/component/button-qr-code/ButtonQRCodeCP'
 import { LoaderCP } from '../../../../common/component/loader/LoaderCP'
+import { ModalCP } from '../../../../common/component/modal/ModalCP'
 import { PropsWithNavigationTP } from '../../../../common/component/navigator/inner/PropsWithNavigationTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
 import { AppStateConfigTP } from '../../../../config/AppStateConfigTP'
+import { ThemeConfig } from '../../../../config/ThemeConfig'
 import { PasswordRequests } from '../../../password/PasswordRequests'
 import { PanelUserLocationCP } from '../../../user/component/panel-user-location/PanelUserLocationCP'
 import { IEstablishment } from '../../IEstablishment'
 import { ListEstablishmentsCP } from '../../component/list-establishments/ListEstablishmentsCP'
-import { ModalPasswordCreationSuccessCP } from '../../component/modal-password-creation-success/ModalPasswordCreationSuccessCP'
 
 type PropsTP = PropsWithNavigationTP<AppNavigationConfigTP, 'establishmentSelect'>
 
@@ -100,10 +101,15 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
                 onListUpdateEnd={() => setMustUpdateList(false)}
             />
 
-            <ModalPasswordCreationSuccessCP
+            <ModalCP
                 show={!!passwordID}
-                passwordID={passwordID ?? 0}
+                title={'Sucesso'}
+                subTitle={passwordID ? `Nova senha gerada: ${passwordID}` : ''}
+                buttonText={'Avançar'}
                 onClose={() => props.navigation.navigate('pwdDetails')}
+                titleColor={ThemeConfig.COLOR_PINK}
+                overlayColor={ThemeConfig.COLOR_GRAY_LIGHT}
+                buttonBackgroundColor={ThemeConfig.COLOR_PINK}
             />
         </View>
     )

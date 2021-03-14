@@ -4,6 +4,8 @@ import { AppStateConfigTP } from '../config/AppStateConfigTP'
 import { Logger } from './Logger'
 import { OrUndefTP } from './types/OrUndefTP'
 
+type KeysTP = Array<keyof AppStateConfigTP>
+
 /**
  * Gerencia acesso, leitura & escrita de propriedades de estado global do aplicativo.
  */
@@ -27,18 +29,21 @@ export class AppStateManager {
 
         // Inclui varios valores de uma vez
         const partialState = param1
-        const stateKeys = Object.keys(partialState) as Array<keyof AppStateConfigTP>
+        const stateKeys = Object.keys(partialState) as KeysTP
         const keyValuePairs = stateKeys.map<[keyof AppStateConfigTP, string]>(key => [key, partialState[key]?.toString() ?? ''])
 
         return AsyncStorage.multiSet(keyValuePairs)
     }
 
-    static async clear(): Promise<void> {
-        return AsyncStorage.clear()
+    static async clear(keys: KeysTP): Promise<void>
+    static async clear(): Promise<void>
+
+    static async clear(keys?: KeysTP): Promise<void> {
+        return keys?.length ? AsyncStorage.multiRemove(keys) : AsyncStorage.clear()
     }
 
     static async debugState(): Promise<void> {
-        const currentKeys = await AsyncStorage.getAllKeys() as Array<keyof AppStateConfigTP>
+        const currentKeys = await AsyncStorage.getAllKeys() as KeysTP
         Logger.info('DEBUG - AppState:: ', await AsyncStorage.multiGet(currentKeys))
     }
 }

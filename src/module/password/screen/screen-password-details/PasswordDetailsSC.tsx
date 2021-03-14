@@ -1,4 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
+import _ from 'lodash'
 import { Button, Container, Grid, H1, H3, Icon, Row, Text } from 'native-base'
 import React, { useEffect, useState } from 'react'
 
@@ -7,15 +8,14 @@ import { Logger } from '../../../../common/Logger'
 import { LoaderCP } from '../../../../common/component/loader/LoaderCP'
 import { ModalCP } from '../../../../common/component/modal/ModalCP'
 import { PropsWithNavigationTP } from '../../../../common/component/navigator/inner/PropsWithNavigationTP'
-import { OrUndefTP } from '../../../../common/types/OrUndefTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
 import { IPassword } from '../../IPassword'
 import { PasswordRequests } from '../../PasswordRequests'
-import { PasswordDetailsSCMocks } from './PasswordDetailsSCMocks'
 
-const INTERVAL_CHECKING = 5000
+const INTERVAL_CHECKING = 10000 // milisegundos
+const TIME_ATTENDANCE_AVERAGE = 5 // minutos
 
 type PropsTP = PropsWithNavigationTP<AppNavigationConfigTP, 'pwdDetails'>
 
@@ -27,44 +27,44 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
 
     const [password, setPassword] = useState<IPassword>()
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
+    const [updatesCount, setUpdatesCount] = useState<number>(0)
     const [establishmentName, setEstablishmentName] = useState<string>()
-    const [showModalAttendanceTime, setShowModalAttendanceTime] = useState<boolean>(false)
     const [isUserAwareOfItsAttendance, setIsUserAwareOfItsAttendance] = useState<boolean>(false)
 
     const isFocused = useIsFocused()
 
-    useEffect(() => { updatePasswordAttendanceState() }, [])
-    useEffect(() => { updatePasswordAttendanceState() }, [isFocused])
+    const deboucedUdatePasswordState = _.debounce(updatePasswordState, 500)
+    useEffect(deboucedUdatePasswordState, [isFocused, updatesCount])
+    useEffect(deboucedUdatePasswordState, [])
 
-    async function updatePasswordAttendanceState(): Promise<void> {
+    function updatePasswordState(): void {
+
+        // Verifica se o atendimento ja foi concluido
+        if (password?.canceled && isCanceling)
+            return setIsCanceling(false)
 
         if (!isFocused || password?.already_attended)
             return
 
-        // Atualiza dados atualizados da senha
-        const _passwordID = Number(await AppStateManager.get('passwordID') ?? 0)
-        const _establishmentName = await AppStateManager.get('establishmentName') ?? ''
-        const _password = await getPassword(_passwordID)
+        // Atualiza dados da senha / atendimento
+        const delay = !updatesCount ? 0 : INTERVAL_CHECKING
+        setTimeout(() => { getPassword() }, delay)
 
-        if (!_password)
+        // Busca assincrona unica para nome do estabelecimento (nao precisa esperar)
+        if (establishmentName)
             return
 
-        setEstablishmentName(_establishmentName)
-        setPassword(_password)
-
-        // Avalia necessidade de atualizar dados da senha novamente
-        if (_password.already_attended || _password.canceled) // Criterio de parada
-            return
-
-        if (_password.currently_calling && !isUserAwareOfItsAttendance)
-            return setShowModalAttendanceTime(true)
-
-        setTimeout(() => { updatePasswordAttendanceState() }, INTERVAL_CHECKING)
+        AppStateManager.get('establishmentName')
+            .then(name => setEstablishmentName(name))
+            .catch(error => Logger.error('FALHA - Erro ao determinar nome do estabelecimento', error))
     }
 
-    async function getPassword(_passwordID: number): Promise<OrUndefTP<IPassword>> {
+    async function getPassword(): Promise<void> {
+
         try {
-            return await PasswordRequests.get(_passwordID)
+            const _passwordID = Number(await AppStateManager.get('passwordID') ?? 0)
+            setPassword(await PasswordRequests.get(_passwordID))
+            setUpdatesCount(updatesCount + 1)
 
         } catch (error) {
             Logger.error(`FALHA - ${getPassword.name}: `, error)
@@ -81,16 +81,25 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
         } catch (error) {
             Logger.error(`FALHA - ${cancelPassword.name}: `, error)
             NotificationUtils.showError('Falha ao tentar cancelar senha')
-
-        } finally {
-            setIsCanceling(false)
         }
     }
 
-    function onModalPasswordAttendanceTimeClose(): void {
-        setIsUserAwareOfItsAttendance(true)
-        setShowModalAttendanceTime(false)
+    function finishAttendance(): void {
+        AppStateManager.clear(['establishmentName', 'passwordID'])
+        props.navigation.navigate('establishmentSelect')
     }
+
+    // Define titulo principal da tela
+    let screenTitle: string
+
+    if (password?.canceled)
+        screenTitle = 'Senha Cancelada'
+    else if (password?.already_attended)
+        screenTitle = 'Atendimento Concluído'
+    else if (password?.currently_calling)
+        screenTitle = 'É a sua vez!'
+    else
+        screenTitle = ((!isLoading && password?.id) ? `Senha: ${password.id}` : '')
 
     // Define texto sobre posicao do usuario, na fila
     let positionReportText: string
@@ -102,20 +111,12 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
         positionReportText = 'Carregando...'
     else if (password?.currently_calling)
         positionReportText = 'Em atendimento'
+    else if (password?.canceled)
+        positionReportText = 'Obrigado por colaborar!'
     else if (!password?.already_attended)
         positionReportText = ((usersAhead > 1) ? `Há ${usersAhead} pessoas na sua frente` : 'Você é próximo(a)!')
     else
-        positionReportText = ''
-
-    // Define titulo principal da tela
-    let passwordExhibitionText: string
-
-    if (password?.canceled)
-        passwordExhibitionText = 'Senha Cancelada'
-    else if (password?.already_attended)
-        passwordExhibitionText = 'Atendimento Concluído'
-    else
-        passwordExhibitionText = ((!isLoading && password?.id) ? `Senha: ${password.id}` : '')
+        positionReportText = `Senha: ${password.id}`
 
     // Define icone
     let iconName: string
@@ -125,11 +126,11 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
     else if (password?.already_attended)
         iconName = 'check-circle'
     else
-        iconName = (password?.currently_calling ? 'clock' : 'user-circle')
+        iconName = (password?.currently_calling ? 'clock-o' : 'user-circle')
 
     // Define estimativa de tempo de espera
-    const timeEstimateText = (!password?.canceled && !password?.already_attended && !isLoading)
-        ? `Tempo estimado de espera: ${PasswordDetailsSCMocks.estimate}`
+    const timeEstimateText = (!password?.canceled && !password?.currently_calling && !password?.already_attended && !isLoading)
+        ? `Tempo estimado de espera: ${usersAhead ? (TIME_ATTENDANCE_AVERAGE * usersAhead) : 1} minuto(s)`
         : ''
 
     return (
@@ -155,7 +156,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
                         paddingHorizontal: 20,
                         flexDirection: 'column',
                     }}>
-                        <H1 style={{ color: 'white', marginTop: 20, marginBottom: 10 }}>{passwordExhibitionText}</H1>
+                        <H1 style={{ color: 'white', marginTop: 20, marginBottom: 10 }}>{screenTitle}</H1>
                         <H3 style={{ color: 'white' }}>{!isLoading ? establishmentName : ''}</H3>
                     </Row>
 
@@ -181,9 +182,10 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
                                 backgroundColor: ThemeConfig.COLOR_PINK,
                                 marginBottom: 30,
                                 marginHorizontal: 15,
+                                opacity: password?.currently_calling ? .5 : 1,
                             }}
                         >
-                            <Text>Cancelar Senha</Text>
+                            <Text>{isCanceling ? 'Cancelando...' : 'Cancelar Senha'}</Text>
                         </Button>
                     }
 
@@ -191,8 +193,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
                         password?.already_attended
                         && <Button
                             block
-                            onPress={() => props.navigation.navigate('establishmentSelect')}
-                            disabled={password?.currently_calling}
+                            onPress={finishAttendance}
                             style={{
                                 backgroundColor: ThemeConfig.COLOR_GRAY_LIGHT,
                                 marginBottom: 30,
@@ -206,10 +207,10 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
             </Container>
 
             <ModalCP
-                onClose={onModalPasswordAttendanceTimeClose}
-                show={showModalAttendanceTime}
+                onClose={() => setIsUserAwareOfItsAttendance(true)}
+                show={!!password?.currently_calling && !isUserAwareOfItsAttendance}
                 title={'É a sua vez!'}
-                subTitle={'Dirija-se para o local do atendimento'}
+                subTitle={'Dirija-se ao local do atendimento'}
                 buttonText={'OK'}
                 titleColor={ThemeConfig.COLOR_PINK}
                 overlayColor={ThemeConfig.COLOR_GRAY_LIGHT}

@@ -1,20 +1,23 @@
-import { View, H1, Text, Button } from 'native-base'
+import _ from 'lodash'
+import { Button, H1, Text, View } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { Modal, ViewStyle } from 'react-native'
 
-import { ModalPropsTP } from './inner/ModalPropsTP'
+type PropsTP = {
 
-type PropsTP = ModalPropsTP & {
+    show: boolean,
 
     title: string,
     subTitle?: string,
     buttonText?: string,
+
+    onClose: () => void,
     onButtonPress?: () => void,
 
     titleColor?: string,
     overlayColor?: string,
-    buttonBackgroundColor?: string,
     backgroundColor?: string,
+    buttonBackgroundColor?: string,
 
     isTransparent?: boolean,
     mustCloseOnButtonPress?: boolean,
@@ -30,18 +33,26 @@ type PropsTP = ModalPropsTP & {
 export function ModalCP(props: PropsTP): React.ReactElement {
 
     const [show, setShow] = useState<boolean>(false)
+    const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
-    useEffect(() => setShow(props.show), [props.show])
+    const deboucedUpdateExhibitionState = _.debounce(updateExhibitionState, 500)
+    useEffect(() => deboucedUpdateExhibitionState(props.show), [props.show])
+    useEffect(() => setIsInitialized(true), [])
 
     function onButtonPress(): void {
         props.onButtonPress?.()
         if (props.mustCloseOnButtonPress !== false)
-            closeModal()
+            deboucedUpdateExhibitionState(false)
     }
 
-    function closeModal(): void {
-        setShow(false)
-        props.onClose()
+    function updateExhibitionState(_show: boolean): void {
+
+        if (!isInitialized)
+            return
+
+        setShow(_show)
+        if (!_show)
+            props.onClose()
     }
 
     return (
@@ -49,7 +60,7 @@ export function ModalCP(props: PropsTP): React.ReactElement {
             animationType={'slide'}
             transparent={props.isTransparent}
             visible={show}
-            onRequestClose={closeModal}
+            onRequestClose={() => deboucedUpdateExhibitionState(false)}
         >
             <View style={{
                 height: '100%',

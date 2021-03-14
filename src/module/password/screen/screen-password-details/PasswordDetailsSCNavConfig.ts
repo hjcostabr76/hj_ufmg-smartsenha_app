@@ -6,5 +6,5 @@ import { PasswordDetailsSC } from './PasswordDetailsSC'
  */
 export const PasswordDetailsSCNavConfig: NavigationScreenConfigTP = {
     component: PasswordDetailsSC,
-    title: 'Aguardando Atendimento',
+    title: 'Fila de Atendimento',
 }
