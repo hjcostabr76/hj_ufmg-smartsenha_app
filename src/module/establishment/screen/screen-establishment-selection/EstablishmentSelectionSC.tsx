@@ -51,8 +51,11 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
 
         if (!creationResult.passwordID)
             NotificationUtils.showError(creationResult.errorMsg ?? 'Falha ao emitir senha')
-        else
+
+        else {
+            setPasswordID(creationResult.passwordID)
             PasswordUtils.onPasswordEmissionSuccess(creationResult.passwordID, establishment.name)
+        }
 
         setIsCreatingPassword(false)
     }
