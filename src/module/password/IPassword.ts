@@ -7,4 +7,5 @@ export interface IPassword {
     currently_calling: boolean
     already_attended: boolean
     usersAhead: number
+    canceled: boolean
 }
