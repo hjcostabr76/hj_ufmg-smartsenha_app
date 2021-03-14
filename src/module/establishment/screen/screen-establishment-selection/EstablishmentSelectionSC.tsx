@@ -1,4 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
+import { AxiosError } from 'axios'
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
@@ -63,8 +64,13 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
             })
 
         } catch (error) {
+
+            const message = ((error as AxiosError)?.response?.status === 403)
+                ? 'Você só pode solicitar uma senha de cada vez'
+                : 'Falha ao tentar emitir senha'
+
             Logger.error(`FALHA - ${onEstablishmentSelected.name}: `, error)
-            NotificationUtils.showError('Falha ao tentar emitir senha')
+            NotificationUtils.showError(message)
 
         } finally {
             setIsCreatingPassword(false)

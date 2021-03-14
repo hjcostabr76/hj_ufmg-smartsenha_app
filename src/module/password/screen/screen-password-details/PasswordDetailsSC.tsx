@@ -17,6 +17,7 @@ const INTERVAL_CHECKING = 5000
 
 /**
  * Tela de acompanhamento com detalhes de uma senha.
+ * TODO: Exibir estimativa real de tempo de espera
  */
 export function PasswordDetailsSC(): React.ReactElement {
 
@@ -28,11 +29,6 @@ export function PasswordDetailsSC(): React.ReactElement {
 
     useEffect(() => { updatePasswordAttendanceState() }, [])
     useEffect(() => { updatePasswordAttendanceState() }, [isFocused])
-
-    const usersAhead = password?.usersAhead ?? 0
-    const positionReportText = password?.already_attended
-        ? 'Em atendimento'
-        : ((usersAhead > 1) ? `Há ${usersAhead} pessoas na sua frente` : 'Você é próximo(a)!')
 
     async function updatePasswordAttendanceState(): Promise<void> {
 
@@ -83,11 +79,22 @@ export function PasswordDetailsSC(): React.ReactElement {
         }
     }
 
+    const isLoading = !password || isCanceling
+    const usersAhead = password?.usersAhead ?? 0
+
+    let positionReportText: string
+    if (isLoading)
+        positionReportText = 'Carregando...'
+    else if (password?.already_attended)
+        positionReportText = 'Em atendimento'
+    else
+        positionReportText = ((usersAhead > 1) ? `Há ${usersAhead} pessoas na sua frente` : 'Você é próximo(a)!')
+
+    const timeEstimateText = !isLoading ? `Tempo estimado de espera: ${PasswordDetailsSCMocks.estimate}` : ''
+    const passwordExhibitionText = !isLoading ? `Senha: ${password?.id ?? ''}` : ''
+
     return (
         <Container style={{ backgroundColor: ThemeConfig.COLOR_GRAY }}>
-
-            <LoaderCP show={!password || isCanceling}/>
-
             <Grid>
                 <Row style={{
                     alignItems: 'flex-end',
@@ -95,7 +102,11 @@ export function PasswordDetailsSC(): React.ReactElement {
                     flex: 4,
                     backgroundColor: 'white',
                 }}>
-                    <Icon type={'FontAwesome'} name={'user-circle'} style={{ fontSize: 80, color: ThemeConfig.COLOR_GRAY }}/>
+                    {
+                        isLoading
+                            ? <LoaderCP/>
+                            : <Icon type={'FontAwesome'} name={'user-circle'} style={{ fontSize: 80, color: ThemeConfig.COLOR_GRAY }}/>
+                    }
                 </Row>
 
                 <Row style={{
@@ -104,8 +115,8 @@ export function PasswordDetailsSC(): React.ReactElement {
                     paddingHorizontal: 20,
                     flexDirection: 'column',
                 }}>
-                    <H1 style={{ color: 'white', marginTop: 20, marginBottom: 10 }}>Senha: {password?.id ?? '...'}</H1>
-                    <H3 style={{ color: 'white' }}>{establishmentName ?? '...'}</H3>
+                    <H1 style={{ color: 'white', marginTop: 20, marginBottom: 10 }}>{passwordExhibitionText}</H1>
+                    <H3 style={{ color: 'white' }}>{!isLoading ? establishmentName : ''}</H3>
                 </Row>
 
                 <Row style={{
@@ -117,7 +128,7 @@ export function PasswordDetailsSC(): React.ReactElement {
                         {positionReportText}
                     </Text>
 
-                    <Text style={{ textAlign: 'center', color: 'white' }}>Tempo estimado de espera: {PasswordDetailsSCMocks.estimate ?? '...'}</Text>
+                    <Text style={{ textAlign: 'center', color: 'white' }}>{timeEstimateText}</Text>
                 </Row>
 
                 <Button

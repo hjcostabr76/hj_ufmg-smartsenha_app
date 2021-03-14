@@ -14,7 +14,7 @@ export const PasswordRequests = {
         const response = await axios({
             method: 'POST',
             url: `${AppConfig.load().apiBaseUrl}/password`,
-            params: { establishmentId },
+            data: { establishmentId },
             headers: { 'x-access-token': await AppStateManager.get('authToken') }
         })
 
