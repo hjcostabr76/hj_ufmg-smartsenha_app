@@ -8,7 +8,7 @@ import { NavigatorCP } from './common/component/navigator/NavigatorCP'
 import { AppNavigationConfigTP } from './config/AppNavigationConfigTP'
 import { ThemeConfig } from './config/ThemeConfig'
 import { EstablishmentSelectionSCNavConfig } from './module/establishment/screen/screen-establishment-selection/EstablishmentSelectionSCNavConfig'
-import { PasswordDetailsSCNavConfig } from './module/password/screen-password-details/PasswordDetailsSCNavConfig'
+import { PasswordDetailsSCNavConfig } from './module/password/screen/screen-password-details/PasswordDetailsSCNavConfig'
 import { LoginSCNavConfig } from './module/user/screen/screen-login/LoginSCNavConfig'
 
 /**
@@ -19,9 +19,9 @@ export default function(): React.ReactNode { // eslint-disable-line import/no-de
 
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
-    useEffect(init, [])
+    useEffect(initialize, [])
 
-    function init(): void {
+    function initialize(): void {
         Logger.enable(__DEV__)
         setIsInitialized(true)
     }

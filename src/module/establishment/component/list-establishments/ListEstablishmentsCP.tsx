@@ -4,6 +4,7 @@ import React, { ReactElement, useEffect, useState } from 'react'
 
 import { AppStateManager } from '../../../../common/AppStateManager'
 import { Logger } from '../../../../common/Logger'
+import { LoaderCP } from '../../../../common/component/loader/LoaderCP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { StringUtils } from '../../../../common/utils/StringUtils'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
@@ -12,6 +13,7 @@ import { IEstablishment } from '../../IEstablishment'
 
 type PropsTP = {
     mustUpdateList: boolean,
+    onEstablishmentSelected: (establishment: IEstablishment) => void,
     onListUpdateEnd: (success: boolean) => void,
 }
 
@@ -51,6 +53,8 @@ export function ListEstablishmentsCP(props: PropsTP): ReactElement {
 
     return (
         <>
+            <LoaderCP show={props.mustUpdateList} />
+
             {
                 !showList
                 && <Text style={{ marginTop: 80, textAlign: 'center' }}>
@@ -63,8 +67,11 @@ export function ListEstablishmentsCP(props: PropsTP): ReactElement {
                 && <List>
                     {
                         establishmentList.map((establishment, i) => (
-                            // EstablishmentSelectionSCMocks.establishments.map((establishment, i) => (
-                            <ListItem avatar key={StringUtils.getSlugStyleString(`${i}-${establishment.name ?? ''}`)}>
+                            <ListItem
+                                avatar
+                                onPress={() => props.onEstablishmentSelected(establishment)}
+                                key={StringUtils.getSlugStyleString(`${i}-${establishment.name ?? ''}`)}
+                            >
                                 <Body>
                                     <Text style={{
                                         fontWeight: 'bold',

@@ -44,8 +44,10 @@ export function LoginSC(props: PropsTP): React.ReactElement {
         if (!validate())
             return
 
-        if (userName !== loadedUser && await login())
-            props.navigation.navigate('establishmentSelect')
+        if (userName !== loadedUser)
+            await login()
+
+        props.navigation.navigate('establishmentSelect')
     }
 
     async function login(): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { EstablishmentSelectionSCMocks } from '../../establishment/screen/screen-establishment-selection/EstablishmentSelectionSCMocks'
+import { EstablishmentSelectionSCMocks } from '../../../establishment/screen/screen-establishment-selection/EstablishmentSelectionSCMocks'
 
 /**
  * MOCKS
