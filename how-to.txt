@@ -20,6 +20,11 @@ npx react-native run-android
 > Usar: react-native-config
 > Lembrar que a instalacao requer modificar build.gradle
 
+-- build (dev)
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+cd android
+./gradlew assembleDebug
+
 -- console.log (terminal)
 npx react-native log-android
 adb logcat *:S ReactNative:V ReactNativeJS:V

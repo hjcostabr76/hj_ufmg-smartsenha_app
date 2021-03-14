@@ -63,3 +63,5 @@ buck-out/
 /ios/Pods/
 
 .env
+
+android/app/src/main/res/raw/*

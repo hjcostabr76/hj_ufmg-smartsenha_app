@@ -37,13 +37,15 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
     useEffect(deboucedUdatePasswordState, [isFocused, updatesCount])
     useEffect(deboucedUdatePasswordState, [])
 
+    const isFinished = (!!password?.canceled || !!password?.already_attended)
+
     function updatePasswordState(): void {
 
         // Verifica se o atendimento ja foi concluido
         if (password?.canceled && isCanceling)
             return setIsCanceling(false)
 
-        if (!isFocused || password?.already_attended)
+        if (!isFocused || isFinished)
             return
 
         // Atualiza dados da senha / atendimento
@@ -91,6 +93,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
 
     // Define titulo principal da tela
     let screenTitle: string
+    const isLoading = !password || isCanceling
 
     if (password?.canceled)
         screenTitle = 'Senha Cancelada'
@@ -103,20 +106,18 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
 
     // Define texto sobre posicao do usuario, na fila
     let positionReportText: string
-
-    const isLoading = !password || isCanceling
     const usersAhead = password?.usersAhead ?? 0
 
     if (isLoading)
         positionReportText = 'Carregando...'
-    else if (password?.currently_calling)
-        positionReportText = 'Em atendimento'
     else if (password?.canceled)
         positionReportText = 'Obrigado por colaborar!'
-    else if (!password?.already_attended)
-        positionReportText = ((usersAhead > 1) ? `Há ${usersAhead} pessoas na sua frente` : 'Você é próximo(a)!')
+    else if (password?.already_attended)
+        positionReportText = `Senha: ${password?.id}`
+    else if (password?.currently_calling)
+        positionReportText = 'Atendimento em andamento'
     else
-        positionReportText = `Senha: ${password.id}`
+        positionReportText = ((usersAhead > 1) ? `Há ${usersAhead} pessoas na sua frente` : 'Você é próximo(a)!')
 
     // Define icone
     let iconName: string
@@ -129,7 +130,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
         iconName = (password?.currently_calling ? 'clock-o' : 'user-circle')
 
     // Define estimativa de tempo de espera
-    const timeEstimateText = (!password?.canceled && !password?.currently_calling && !password?.already_attended && !isLoading)
+    const timeEstimateText = (!isFinished && !password?.currently_calling && !isLoading)
         ? `Tempo estimado de espera: ${usersAhead ? (TIME_ATTENDANCE_AVERAGE * usersAhead) : 1} minuto(s)`
         : ''
 
@@ -173,7 +174,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
                     </Row>
 
                     {
-                        !password?.already_attended
+                        !isFinished
                         && <Button
                             block
                             onPress={cancelPassword}
@@ -190,7 +191,7 @@ export function PasswordDetailsSC(props: PropsTP): React.ReactElement {
                     }
 
                     {
-                        password?.already_attended
+                        isFinished
                         && <Button
                             block
                             onPress={finishAttendance}
