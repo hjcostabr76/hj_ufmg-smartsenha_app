@@ -6,11 +6,11 @@ import { View } from 'react-native'
 
 import { AppStateManager } from '../../../../common/AppStateManager'
 import { LoaderCP } from '../../../../common/component/loader/LoaderCP'
-import { ModalCP } from '../../../../common/component/modal/ModalCP'
 import { PropsWithNavigationTP } from '../../../../common/component/navigator/inner/PropsWithNavigationTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
+import { ModalPasswordCreationAlertCP } from '../../../password/component/modal-password-creation-alert/ModalPasswordCreationAlertCP'
 import { PasswordUtils } from '../../../password/utils/PasswordUtils'
 import { PanelUserLocationCP } from '../../../user/component/panel-user-location/PanelUserLocationCP'
 import { IEstablishment } from '../../IEstablishment'
@@ -91,15 +91,10 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
                 onListUpdateEnd={() => setMustUpdateList(false)}
             />
 
-            <ModalCP
+            <ModalPasswordCreationAlertCP
                 show={!!passwordID}
-                title={'Sucesso'}
-                subTitle={passwordID ? `Nova senha gerada: ${passwordID}` : ''}
-                buttonText={'Avançar'}
+                passwordID={passwordID ?? 0}
                 onClose={() => props.navigation.navigate('pwdDetails')}
-                titleColor={ThemeConfig.COLOR_PINK}
-                overlayColor={ThemeConfig.COLOR_GRAY_LIGHT}
-                buttonBackgroundColor={ThemeConfig.COLOR_PINK}
             />
         </View>
     )

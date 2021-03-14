@@ -11,7 +11,7 @@ type PropsTP = {
     subTitle?: string,
     buttonText?: string,
 
-    onClose: () => void,
+    onClose?: () => void,
     onButtonPress?: () => void,
 
     titleColor?: string,
@@ -52,7 +52,7 @@ export function ModalCP(props: PropsTP): React.ReactElement {
 
         setShow(_show)
         if (!_show)
-            props.onClose()
+            props.onClose?.()
     }
 
     return (
