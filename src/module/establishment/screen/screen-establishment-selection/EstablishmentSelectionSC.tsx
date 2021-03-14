@@ -1,20 +1,17 @@
 import { useIsFocused } from '@react-navigation/native'
-import { AxiosError } from 'axios'
 import _ from 'lodash'
+import { Button, Text } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 
 import { AppStateManager } from '../../../../common/AppStateManager'
-import { Logger } from '../../../../common/Logger'
-import { ButtonQRCodeCP } from '../../../../common/component/button-qr-code/ButtonQRCodeCP'
 import { LoaderCP } from '../../../../common/component/loader/LoaderCP'
 import { ModalCP } from '../../../../common/component/modal/ModalCP'
 import { PropsWithNavigationTP } from '../../../../common/component/navigator/inner/PropsWithNavigationTP'
 import { NotificationUtils } from '../../../../common/utils/NotificationUtils'
 import { AppNavigationConfigTP } from '../../../../config/AppNavigationConfigTP'
-import { AppStateConfigTP } from '../../../../config/AppStateConfigTP'
 import { ThemeConfig } from '../../../../config/ThemeConfig'
-import { PasswordRequests } from '../../../password/PasswordRequests'
+import { PasswordUtils } from '../../../password/utils/PasswordUtils'
 import { PanelUserLocationCP } from '../../../user/component/panel-user-location/PanelUserLocationCP'
 import { IEstablishment } from '../../IEstablishment'
 import { ListEstablishmentsCP } from '../../component/list-establishments/ListEstablishmentsCP'
@@ -47,35 +44,17 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
             setLocationText(locationAddress)
     }
 
-    function onQRCodeReading(): void {
-        throw new Error('Implementar leitura de qr code...')
-    }
-
     async function onEstablishmentSelected(establishment: IEstablishment): Promise<void> {
 
-        try {
+        setIsCreatingPassword(true)
+        const creationResult = await PasswordUtils.emitPassword(establishment.id)
 
-            setIsCreatingPassword(true)
-            const _passwordID = await PasswordRequests.create(establishment.id)
-            setPasswordID(_passwordID)
+        if (!creationResult.passwordID)
+            NotificationUtils.showError(creationResult.errorMsg ?? 'Falha ao emitir senha')
+        else
+            PasswordUtils.onPasswordEmissionSuccess(creationResult.passwordID, establishment.name)
 
-            AppStateManager.set<AppStateConfigTP>({
-                passwordID: _passwordID,
-                establishmentName: establishment.name
-            })
-
-        } catch (error) {
-
-            const message = ((error as AxiosError)?.response?.status === 403)
-                ? 'Você só pode solicitar uma senha de cada vez'
-                : 'Falha ao tentar emitir senha'
-
-            Logger.error(`FALHA - ${onEstablishmentSelected.name}: `, error)
-            NotificationUtils.showError(message)
-
-        } finally {
-            setIsCreatingPassword(false)
-        }
+        setIsCreatingPassword(false)
     }
 
     return (
@@ -90,7 +69,18 @@ export function EstablishmentSelectionSC(props: PropsTP): React.ReactElement {
             {
                 !mustUpdateList
                 && <>
-                    <ButtonQRCodeCP onPress={onQRCodeReading}/>
+                    <Button
+                        block
+                        onPress={() => props.navigation.navigate('pwdDetailsQRCodeCatching')}
+                        style={{
+                            backgroundColor: ThemeConfig.COLOR_GRAY,
+                            marginHorizontal: 15,
+                            marginTop: 20,
+                            marginBottom: 10,
+                        }}
+                    >
+                        <Text>Escanear QR Code</Text>
+                    </Button>
                     <PanelUserLocationCP locationText={locationText} />
                 </>
             }
